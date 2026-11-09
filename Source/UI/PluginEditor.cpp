@@ -24,9 +24,11 @@ public:
             strips[(size_t) i] = std::make_unique<ChannelStrip> (p, i);
             strips[(size_t) i]->onSelect = [&ed] (int ch) { ed.selectChannel (ch); };
             strips[(size_t) i]->onMessage = [&ed] (const String& m) { ed.showMessage (m); };
-            addAndMakeVisible (*strips[(size_t) i]);
+            mixer.addAndMakeVisible (*strips[(size_t) i]);
         }
-        addAndMakeVisible (sends);
+        mixer.addAndMakeVisible (sends);
+        mixer.setInterceptsMouseClicks (false, true);
+        addAndMakeVisible (mixer);
         addAndMakeVisible (chain);
         addChildComponent (browser);
 
@@ -39,7 +41,7 @@ public:
         chain.onMessage = [&ed] (const String& m) { ed.showMessage (m); };
         chain.onBrowse = [&ed] { ed.toggleBrowser(); };
         header.onBrowse = [&ed] { ed.toggleBrowser(); };
-        browser.onClose = [this] { browser.setVisible (false); };
+        browser.onClose = [this] { browser.setVisible (false); layoutMixer(); };
         browser.onLoad = [this] (const PluginDescription& d)
         {
             const int s = chain.proc.host->firstEmptySlot (chain.getChannel());
@@ -60,11 +62,28 @@ public:
         header.setBounds (0, 0, designW, 64);
         toast.setBounds (420, 14, 470, 36);
         presets.setBounds (24, 68, designW - 48, 58);
+        // the mixer area (sends + six strips) lives in its own design space: y 130..750
+        mixer.setBounds (0, mixerTop, designW, mixerH);
         for (int i = 0; i < kNumChannels; ++i)
-            strips[(size_t) i]->setBounds (40 + i * 254, 330, 246, 414);
+            strips[(size_t) i]->setBounds (40 + i * 254, 330 - mixerTop, 246, 414);
         layoutSends();
         chain.setBounds (0, 760, designW, 220);
-        browser.setBounds (designW - 780, 132, 756, 620);
+        browser.setBounds (16, mixerTop + 4, browserW, mixerH - 14);   // docked on the left
+        layoutMixer();
+    }
+
+    // With the Browser open, the channels shift right and shrink to make room for it.
+    void layoutMixer()
+    {
+        if (browser.isVisible())
+        {
+            const float avail = (float) (designW - browserW - 24);
+            const float s = avail / (float) designW;
+            const float dy = (float) mixerH * (1.0f - s) * 0.5f;
+            mixer.setTransform (AffineTransform::scale (s).translated ((float) (browserW + 20), (float) mixerTop * (1.0f - s) + dy));
+        }
+        else
+            mixer.setTransform ({});
     }
 
     void layoutSends()
@@ -73,7 +92,7 @@ public:
         const auto sb = strips[(size_t) ch]->getBounds();
         const int w = 486, h = 206;
         const int x = jlimit (16, designW - w - 16, sb.getX() - 4);
-        sends.setBounds (x, 136, w, h);
+        sends.setBounds (x, 136 - mixerTop, w, h);
         sends.arrowX = (float) (sb.getX() + 96 - x);
         sends.repaint();
     }
@@ -94,6 +113,8 @@ public:
     std::array<std::unique_ptr<ChannelStrip>, (size_t) kNumChannels> strips;
     DeviceChain chain;
     BrowserPanel browser;
+    Component mixer;
+    static constexpr int mixerTop = 130, mixerH = 620, browserW = 380;
     Label toast;
     uint32 toastTime = 0;
 };
@@ -154,6 +175,7 @@ void SIXEditor::toggleBrowser()
 {
     content->browser.setVisible (! content->browser.isVisible());
     if (content->browser.isVisible()) content->browser.toFront (true);
+    content->layoutMixer();
 }
 
 void SIXEditor::timerCallback()

@@ -9,7 +9,7 @@ class BrowserPanel::FolderList : public Component, public DragAndDropTarget
 {
 public:
     explicit FolderList (BrowserPanel& b) : owner (b) {}
-    static constexpr int rowH = 38;
+    int rowH = 38;
 
     int rowAt (int y) const { return y / rowH; }                         // 0 = All, 1..n folders, n+1 = "+ New"
     int numRows() const { return owner.catalog().numFolders() + 2; }
@@ -194,17 +194,29 @@ void BrowserPanel::paint (Graphics& g)
     drawPanel (g, getLocalBounds().toFloat(), Colour (0xff0f1c42), col::border.brighter (0.3f), 14.0f);
     g.setColour (col::text);
     g.setFont (sixFont (22.0f));
-    g.drawText ("Browse", 22, 14, 200, 30, Justification::centredLeft);
+    g.drawText ("Browser", 22, 14, 200, 30, Justification::centredLeft);
     g.setColour (col::muted);
     g.setFont (sixFont (14.0f));
-    g.drawText ("Drag an effect onto a slot to load it, or onto a folder to file it. Right-click for more.",
-                22, getHeight() - 34, getWidth() - 44, 24, Justification::centredLeft);
+    g.drawFittedText ("Drag an effect onto a slot to load it, or onto a folder to file it. Right-click for more.",
+                      { 16, getHeight() - 38, getWidth() - 32, 32 }, Justification::centredLeft, 2);
 }
 
 void BrowserPanel::resized()
 {
     close.setBounds (getWidth() - 96, 12, 80, 34);
     rescan.setBounds (getWidth() - 186, 12, 82, 34);
+    if (getWidth() < 520)   // docked, narrow: folders on top, results below
+    {
+        folderList->rowH = 30;
+        const int fh = jmin (folderList->numRows() * 30, 30 * 6);
+        folderList->setBounds (12, 54, getWidth() - 24, fh);
+        const int y = 54 + fh + 8;
+        search.setBounds (12, y, getWidth() - 24, 36);
+        status.setBounds (12, y + 38, getWidth() - 24, 20);
+        list.setBounds (6, y + 60, getWidth() - 12, getHeight() - (y + 60) - 40);
+        return;
+    }
+    folderList->rowH = 38;
     const int fw = 190;
     folderList->setBounds (14, 56, fw, getHeight() - 56 - 44);
     const int x = 14 + fw + 12;
@@ -233,7 +245,7 @@ void BrowserPanel::updateResults()
     results = catalog().search (search.getText(), selectedFolder);
     list.updateContent();
     list.repaint();
-    if (folderList != nullptr) folderList->repaint();
+    if (folderList != nullptr) { folderList->repaint(); resized(); }
     refresh();
 }
 
