@@ -1,0 +1,13 @@
+name: Runner probe
+on:
+  push:
+    branches: [main]
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok
+  mac15:
+    runs-on: macos-15
+    steps:
+      - run: uname -m && sw_vers
