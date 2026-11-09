@@ -1,0 +1,58 @@
+name: Build SIX (macOS arm64)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: macos-14          # Apple Silicon runner
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: brew install ninja || true
+      - name: Configure
+        run: cmake -S . -B build-mac -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 -DSIX_BUILD_TESTS=ON
+      - name: Build
+        run: |
+          set -o pipefail
+          cmake --build build-mac -j 4 --target SIX_VST3 SIXTests SIXTestComp_VST3 SIXTestLatency_VST3 SIXTestWidener_VST3 2>&1 | tee build.log | grep -E 'error|warning: unused|FAILED' || true
+          test -d build-mac/SIX_artefacts/Release/VST3/SIX.vst3
+      - name: Engine tests
+        run: build-mac/SIXTests_artefacts/Release/SIXTests "$PWD/build-mac" | tee tests.txt
+      - name: UI tests
+        continue-on-error: true
+        run: build-mac/SIXTests_artefacts/Release/SIXTests "$PWD/build-mac" --ui | tee -a tests.txt
+      - name: Stress test
+        run: build-mac/SIXTests_artefacts/Release/SIXTests "$PWD/build-mac" --stress 15 | tee -a tests.txt
+      - name: Package installer
+        run: |
+          set -e
+          OUT=build-mac/SIX_artefacts/Release/VST3/SIX.vst3
+          codesign --force --deep --sign - "$OUT"
+          lipo -archs "$OUT/Contents/MacOS/SIX" | tee -a tests.txt
+          mkdir -p dist/root/Library/Audio/Plug-Ins/VST3 dist/out
+          cp -R "$OUT" dist/root/Library/Audio/Plug-Ins/VST3/
+          pkgbuild --root dist/root --identifier com.sixaudio.six.vst3 --version 1.0.0 --install-location / dist/out/SIX-Installer.pkg
+          cp -R "$OUT" dist/out/
+          cp installer/Install-SIX.command dist/out/
+          chmod +x dist/out/Install-SIX.command
+          cp tests.txt dist/out/test-results.txt
+          (cd dist/out && zip -qry ../SIX-mac-arm64.zip .)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SIX-mac-arm64
+          path: dist/SIX-mac-arm64.zip
+      - name: Publish result to the build-output branch
+        if: always()
+        run: |
+          mkdir -p /tmp/pub && cd /tmp/pub
+          cp "$GITHUB_WORKSPACE"/dist/SIX-mac-arm64.zip . 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE"/tests.txt test-results.txt 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE"/build.log build.log 2>/dev/null || true
+          echo "${{ github.sha }} ${{ job.status }}" > STATUS.txt
+          git init -q -b build-output
+          git config user.name "SIX build"; git config user.email "build@six.local"
+          git add -A && git commit -qm "Build ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" build-output

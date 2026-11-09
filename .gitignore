@@ -1,0 +1,5 @@
+build/
+build-*/
+JUCE
+.tools/
+SIX-screenshot.png
