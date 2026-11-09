@@ -7,7 +7,7 @@ permissions:
   contents: write
 jobs:
   build:
-    runs-on: macos-latest      # Apple Silicon runner
+    runs-on: macos-15          # Apple Silicon runner
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
