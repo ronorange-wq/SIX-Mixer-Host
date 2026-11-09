@@ -32,6 +32,20 @@ public:
     static bool isSelf (const juce::PluginDescription& d);
     static bool isEffect (const juce::PluginDescription& d) { return ! d.isInstrument; }
 
+    // ---- user folders ("Reverb", "Delay"...), shared by every SIX instance and project
+    int numFolders() const { return folders.size(); }
+    juce::String folderName (int f) const { return folders[f].name; }
+    int folderSize (int f) const { return folders[f].ids.size(); }
+    int createFolder (const juce::String& name);
+    void renameFolder (int f, const juce::String& name);
+    void deleteFolder (int f);
+    void moveFolder (int from, int to);
+    bool addToFolder (int f, const juce::PluginDescription& d);       // false if already there
+    void removeFromFolder (int f, const juce::PluginDescription& d);
+    bool isInFolder (int f, const juce::PluginDescription& d) const;
+    juce::Array<juce::PluginDescription> search (const juce::String& text, int folder) const;   // folder -1 = all
+    void reloadFolders() { loadFolders(); }
+
     juce::ChangeBroadcaster changes;
 
 private:
@@ -39,6 +53,10 @@ private:
     void timerCallback() override; // AU scan step / notifications
     void save();
     void load();
+    void saveFolders();
+    void loadFolders();
+    struct Folder { juce::String name; juce::StringArray ids; };
+    juce::Array<Folder> folders;
     static juce::File dataDir();
 
     juce::AudioPluginFormatManager& formats;

@@ -7,6 +7,7 @@ using namespace juce;
 PluginCatalog::PluginCatalog (AudioPluginFormatManager& fm) : Thread ("SIX plug-in scan"), formats (fm)
 {
     load();
+    loadFolders();
 }
 
 PluginCatalog::~PluginCatalog()
@@ -145,6 +146,94 @@ Array<PluginDescription> PluginCatalog::search (const String& text) const
         if (ok) r.add (d);
     }
     return r;
+}
+
+// ------------------------------------------------------------------------------ folders
+void PluginCatalog::loadFolders()
+{
+    folders.clear();
+    if (auto xml = parseXML (dataDir().getChildFile ("Folders.xml")))
+        for (auto* f : xml->getChildWithTagNameIterator ("FOLDER"))
+        {
+            Folder fo;
+            fo.name = f->getStringAttribute ("name");
+            for (auto* p : f->getChildWithTagNameIterator ("PLUGIN")) fo.ids.add (p->getStringAttribute ("id"));
+            folders.add (fo);
+        }
+}
+
+void PluginCatalog::saveFolders()
+{
+    XmlElement root ("SIXFOLDERS");
+    for (auto& f : folders)
+    {
+        auto* e = root.createNewChildElement ("FOLDER");
+        e->setAttribute ("name", f.name);
+        for (auto& id : f.ids) e->createNewChildElement ("PLUGIN")->setAttribute ("id", id);
+    }
+    root.writeTo (dataDir().getChildFile ("Folders.xml"));
+    changes.sendChangeMessage();
+}
+
+int PluginCatalog::createFolder (const String& name)
+{
+    Folder f;
+    f.name = name.trim().isEmpty() ? String ("New folder") : name.trim();
+    folders.add (f);
+    saveFolders();
+    return folders.size() - 1;
+}
+
+void PluginCatalog::renameFolder (int f, const String& name)
+{
+    if (! isPositiveAndBelow (f, folders.size()) || name.trim().isEmpty()) return;
+    folders.getReference (f).name = name.trim();
+    saveFolders();
+}
+
+void PluginCatalog::deleteFolder (int f)
+{
+    if (! isPositiveAndBelow (f, folders.size())) return;
+    folders.remove (f);   // only the folder: plug-ins stay installed and in "All effects"
+    saveFolders();
+}
+
+void PluginCatalog::moveFolder (int from, int to)
+{
+    if (! isPositiveAndBelow (from, folders.size()) || ! isPositiveAndBelow (to, folders.size()) || from == to) return;
+    folders.move (from, to);
+    saveFolders();
+}
+
+static String folderKey (const PluginDescription& d) { return d.createIdentifierString(); }
+
+bool PluginCatalog::addToFolder (int f, const PluginDescription& d)
+{
+    if (! isPositiveAndBelow (f, folders.size()) || isInFolder (f, d)) return false;
+    folders.getReference (f).ids.add (folderKey (d));
+    saveFolders();
+    return true;
+}
+
+void PluginCatalog::removeFromFolder (int f, const PluginDescription& d)
+{
+    if (! isPositiveAndBelow (f, folders.size())) return;
+    folders.getReference (f).ids.removeString (folderKey (d));
+    saveFolders();
+}
+
+bool PluginCatalog::isInFolder (int f, const PluginDescription& d) const
+{
+    return isPositiveAndBelow (f, folders.size()) && folders.getReference (f).ids.contains (folderKey (d));
+}
+
+Array<PluginDescription> PluginCatalog::search (const String& text, int folder) const
+{
+    auto r = search (text);
+    if (! isPositiveAndBelow (folder, folders.size())) return r;
+    Array<PluginDescription> out;
+    for (auto& d : r) if (isInFolder (folder, d)) out.add (d);
+    return out;
 }
 
 Array<PluginDescription> PluginCatalog::findTypesForFile (const File& file, String& error)

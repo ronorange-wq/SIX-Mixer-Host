@@ -64,7 +64,7 @@ public:
             strips[(size_t) i]->setBounds (40 + i * 254, 330, 246, 414);
         layoutSends();
         chain.setBounds (0, 760, designW, 220);
-        browser.setBounds (designW - 560, 132, 536, 620);
+        browser.setBounds (designW - 780, 132, 756, 620);
     }
 
     void layoutSends()

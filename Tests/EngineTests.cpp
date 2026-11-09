@@ -486,6 +486,35 @@ static void testPluginMorphAndState()
     }
 }
 
+static void testFolders()
+{
+    std::cout << "[Browse folders: create, file, rename, persist, delete]" << std::endl;
+    Rig r;
+    auto& cat = r.p->host->catalog;
+    while (cat.numFolders() > 0) cat.deleteFolder (0);
+    auto comp = describe (r, "SIXTestComp");
+    auto lat = describe (r, "SIXTestLatency");
+    const int rev = cat.createFolder ("Reverb");
+    const int del = cat.createFolder ("Delay");
+    CHECK (cat.numFolders() == 2 && cat.folderName (rev) == "Reverb", "folders created");
+    CHECK (cat.addToFolder (rev, comp) && ! cat.addToFolder (rev, comp), "add once, no duplicates");
+    cat.addToFolder (del, lat);
+    cat.addToFolder (del, comp);   // one effect may live in several folders
+    CHECK (cat.search ({}, rev).size() == 1 && cat.search ({}, del).size() == 2, "folder contents");
+    CHECK (cat.search ("Latency", del).size() == 1, "search inside a folder");
+    cat.renameFolder (del, "Delays");
+    {
+        Rig r2;   // another SIX instance / a new project sees the same folders
+        auto& c2 = r2.p->host->catalog;
+        CHECK (c2.numFolders() == 2 && c2.folderName (1) == "Delays" && c2.folderSize (1) == 2, "folders persist across instances");
+    }
+    cat.removeFromFolder (del, comp);
+    CHECK (cat.folderSize (del) == 1, "remove from folder");
+    cat.deleteFolder (rev);
+    CHECK (cat.numFolders() == 1 && cat.getEffects().size() >= 3, "deleting a folder keeps the plug-ins");
+    while (cat.numFolders() > 0) cat.deleteFolder (0);
+}
+
 static void testOffline()
 {
     std::cout << "[offline render determinism]" << std::endl;
@@ -549,7 +578,18 @@ static void snapshot (const File& out, bool demo)
         hm.assignMap (hm.slot (1, 0).inst, 0);
     }
     std::unique_ptr<AudioProcessorEditor> ed (r.p->createEditor());
-    if (demo && out.getFileName().contains ("browse")) if (auto* se = dynamic_cast<SIXEditor*> (ed.get())) se->toggleBrowser();
+    if (demo && out.getFileName().contains ("browse"))
+    {
+        auto& cat = hm.catalog;
+        while (cat.numFolders() > 0) cat.deleteFolder (0);
+        const int rv = cat.createFolder ("Reverb");
+        const int dl = cat.createFolder ("Delay");
+        cat.createFolder ("Compressors");
+        cat.addToFolder (dl, describe (r, "SIXTestLatency"));
+        cat.addToFolder (rv, describe (r, "SIXTestWidener"));
+        cat.addToFolder (2, describe (r, "SIXTestComp"));
+        if (auto* se = dynamic_cast<SIXEditor*> (ed.get())) se->toggleBrowser();
+    }
     ed->setSize (1600, 980);
     MessageManager::getInstance()->runDispatchLoopUntil (200);
     r.run (5, sine);
@@ -721,6 +761,7 @@ int main (int argc, char** argv)
     testHostingChain();
     testMorph();
     testPluginMorphAndState();
+    testFolders();
     testOffline();
     std::cout << std::endl << checks - failures << "/" << checks << " checks passed" << std::endl;
     return failures == 0 ? 0 : 1;
