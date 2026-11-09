@@ -1,0 +1,14 @@
+name: Runner probe
+on:
+  push:
+    branches: [main]
+jobs:
+  probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, macos-26, macos-15-intel, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - run: uname -m && (sw_vers || true)
