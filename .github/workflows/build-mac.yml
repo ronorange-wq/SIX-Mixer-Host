@@ -1,4 +1,4 @@
-name: Build SIX (macOS arm64)
+name: Build SIX (macOS)
 on:
   push:
     branches: [main]
@@ -7,13 +7,13 @@ permissions:
   contents: write
 jobs:
   build:
-    runs-on: macos-latest      # Apple Silicon runner
+    runs-on: macos-15-intel    # builds a Universal binary (native arm64 for M-series + x86_64)
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
         run: brew install ninja || true
       - name: Configure
-        run: cmake -S . -B build-mac -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 -DSIX_BUILD_TESTS=ON
+        run: cmake -S . -B build-mac -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64" -DSIX_BUILD_TESTS=ON
       - name: Build
         run: |
           set -o pipefail
