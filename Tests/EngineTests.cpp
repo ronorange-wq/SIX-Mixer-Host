@@ -838,7 +838,8 @@ static void stress (int seconds)
     }
     running = false;
     audio.join();
-    for (int i = 0; i < 20; ++i) { r.run (1, Rig::dc); }
+    // let running cross-fades (up to a 1-bar morph = 2 s) finish before counting
+    for (int i = 0; i < 1000; ++i) { r.run (1, Rig::dc); }
     int occupied = 0;
     for (int ch = 0; ch < kNumChannels; ++ch) for (int s = 0; s < kNumSlots; ++s) occupied += hm.slot (ch, s).inst != nullptr ? 1 : 0;
     std::cout << "  ops " << ops << ", restores " << restores << ", audio blocks " << blocks.load() << ", pool " << hm.poolSize()
