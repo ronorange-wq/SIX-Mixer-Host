@@ -8,6 +8,8 @@
 #include "UI/DeviceChain.h"
 #include "UI/PresetBar.h"
 #include "UI/PluginWindows.h"
+#include "UI/SendsPanel.h"
+#include "UI/ChannelStrip.h"
 
 using namespace juce;
 using namespace six;
@@ -733,6 +735,29 @@ static void testUi()
     if (plus != nullptr) plus->triggerClick();
     MessageManager::getInstance()->runDispatchLoopUntil (50);
     CHECK (hm.bank.get (0).used && hm.bank.get (0).name.isEmpty(), "+ saved preset 01 without a name");
+    // typed values: send -21 dB and fader -6 dB (click the value, type, Enter)
+    {
+        Array<SendsPanel*> panels;
+        findAll (*ed, panels);
+        Array<Label*> labels;
+        if (! panels.isEmpty()) findAll (*panels[0], labels);
+        Label* firstSend = nullptr;
+        for (auto* l : labels) if (l->isEditable() && firstSend == nullptr) firstSend = l;   // row -> 02 of CH 01
+        CHECK (firstSend != nullptr, "send value is typeable");
+        if (firstSend != nullptr) firstSend->setText ("-21", sendNotification);
+        Array<ChannelStrip*> strips;
+        findAll (*ed, strips);
+        Array<Label*> stripLabels;
+        findAll (*strips[0], stripLabels);
+        Label* fader = nullptr;
+        for (auto* l : stripLabels) if (l->isEditable() && l->getText() == "0.0 dB" && l->getJustificationType() == Justification::centred) fader = l;
+        CHECK (fader != nullptr, "fader value is typeable");
+        if (fader != nullptr) fader->setText ("-6", sendNotification);
+        r.run (3, Rig::dc);
+        CHECK_NEAR (r.get ("ch01_to02_level"), -21.0, 0.05, "typed -21 into the send");
+        CHECK_NEAR (r.get ("ch01_fader"), -6.0, 0.05, "typed -6 into the fader");
+    }
+
    #if JUCE_MAC   // native top-level windows need a window manager (not available under Xvfb)
     r.p->host->windows().open (hm.slot (0, 0).inst, "test");
     CHECK (hm.windows().isOpen (hm.slot (0, 0).inst), "native editor window opens");

@@ -87,6 +87,11 @@ private:
     float levelL = 0, levelR = 0;
 };
 
+// Makes a value label typeable: click it, type a value ("-21", "L20", "-inf"), press Enter.
+// The text is read by the parameter itself and sent to the host as one gesture.
+void makeValueTypeable (juce::Label& label, SIXAudioProcessor& p, std::function<int()> controlIndex,
+                        std::function<void (const juce::String&)> onRejected = {});
+
 // Draws a rounded panel like the reference
 void drawPanel (juce::Graphics& g, juce::Rectangle<float> r, juce::Colour fill, juce::Colour outline, float radius = 10.0f);
 }

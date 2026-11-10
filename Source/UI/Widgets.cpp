@@ -89,6 +89,44 @@ void ControlSlider::valueChanged()
 String ControlSlider::getTextFromValue (double v) { return param->getText (param->convertTo0to1 ((float) v), 32); }
 double ControlSlider::getValueFromText (const String& t) { return param->convertFrom0to1 (param->getValueForText (t)); }
 
+// ------------------------------------------------------------------------------ typed values
+void makeValueTypeable (Label& label, SIXAudioProcessor& p, std::function<int()> controlIndex, std::function<void (const String&)> onRejected)
+{
+    label.setEditable (true, false, false);          // single click starts typing
+    label.setInterceptsMouseClicks (true, false);
+    label.setMouseCursor (MouseCursor::IBeamCursor);
+    label.setTooltip ("Click to type a value, then press Enter");
+    label.setColour (Label::backgroundWhenEditingColourId, col::bgBottom);
+    label.setColour (Label::textWhenEditingColourId, col::text);
+    label.setColour (Label::outlineWhenEditingColourId, col::teal);
+    auto* lp = &label;
+    label.onEditorShow = [lp]
+    {
+        if (auto* ed = lp->getCurrentTextEditor())
+        {
+            auto t = lp->getText().upToFirstOccurrenceOf (" dB", false, false).trim();
+            ed->setText (t, false);
+            ed->selectAll();
+            ed->setJustification (lp->getJustificationType());
+        }
+    };
+    label.onTextChange = [&p, lp, controlIndex, onRejected]
+    {
+        const int c = controlIndex();
+        auto* param = p.params.controls[(size_t) c];
+        auto text = lp->getText().trim();
+        if (text.isEmpty()) return;
+        const float plain = param->convertFrom0to1 (param->getValueForText (text));
+        const auto& info = controlInfo (c);
+        if (info.kind == ControlKind::gainDb && info.other >= 0)
+        {
+            const auto err = validateRoutingChange (p.host->currentValues(), c, plain);
+            if (err.isNotEmpty()) { if (onRejected) onRejected (err); return; }
+        }
+        ParamRefs::setWithGesture (param, plain);
+    };
+}
+
 // ------------------------------------------------------------------------------ ControlPill
 ControlPill::ControlPill (SIXAudioProcessor& p, int c, String offText, String onText)
     : proc (p), control (c), off (std::move (offText)), on (std::move (onText)) {}

@@ -47,9 +47,12 @@ ChannelStrip::ChannelStrip (SIXAudioProcessor& p, int c)
     for (auto* l : { &sendInValue, &panValue, &faderValue })
     {
         l->setFont (sixFont (16.0f));
-        l->setInterceptsMouseClicks (false, false);
         addAndMakeVisible (*l);
     }
+    auto msg = [this] (const String& m) { if (onMessage) onMessage (m); };
+    makeValueTypeable (sendInValue, p, [c] { return channelControl (c, ccSendIn); }, msg);
+    makeValueTypeable (panValue, p, [c] { return channelControl (c, ccPan); }, msg);
+    makeValueTypeable (faderValue, p, [c] { return channelControl (c, ccFader); }, msg);
     faderValue.setFont (sixFont (19.0f));
     faderValue.setJustificationType (Justification::centred);
     sendInValue.setJustificationType (Justification::centredRight);
@@ -125,9 +128,9 @@ void ChannelStrip::refresh()
     const bool running = proc.engine.processedBlocks.load() > 0;
     auto val = [&] (int i) { return running ? e[(size_t) i].load() : proc.params.raw[(size_t) i]->load(); };
 
-    sendInValue.setText (formatDb (val (channelControl (ch, ccSendIn))), dontSendNotification);
-    panValue.setText (formatPan (val (channelControl (ch, ccPan))), dontSendNotification);
-    faderValue.setText (formatDb (val (channelControl (ch, ccFader))), dontSendNotification);
+    if (! sendInValue.isBeingEdited()) sendInValue.setText (formatDb (val (channelControl (ch, ccSendIn))), dontSendNotification);
+    if (! panValue.isBeingEdited())    panValue.setText (formatPan (val (channelControl (ch, ccPan))), dontSendNotification);
+    if (! faderValue.isBeingEdited())  faderValue.setText (formatDb (val (channelControl (ch, ccFader))), dontSendNotification);
 
     const auto nm = proc.host->channelNames[(size_t) ch];
     if (! name.isBeingEdited() && name.getText() != nm) name.setText (nm, dontSendNotification);

@@ -14,6 +14,9 @@ SendsPanel::SendsPanel (SIXAudioProcessor& p) : proc (p)
         r.value.setJustificationType (Justification::centredRight);
         addAndMakeVisible (r.target);
         addAndMakeVisible (r.value);
+        auto* lvl = &r;
+        makeValueTypeable (r.value, p, [lvl] { return lvl->level->getControl(); },
+                           [this] (const String& m) { if (onMessage) onMessage (m); });
         r.level = std::make_unique<ControlSlider> (p, sendLevelControl (0, sendTarget (0, k)), Slider::LinearHorizontal);
         r.level->onRejected = [this] (const String& m) { if (onMessage) onMessage (m); };
         r.level->setDoubleClickReturnValue (true, kMinDb);
@@ -84,7 +87,7 @@ void SendsPanel::refresh()
         r.mode->refresh();
         const float db = proc.engine.processedBlocks.load() > 0 ? proc.engine.effective[(size_t) r.level->getControl()].load()
                                                                 : proc.params.raw[(size_t) r.level->getControl()]->load();
-        r.value.setText (formatDb (db), dontSendNotification);
+        if (! r.value.isBeingEdited()) r.value.setText (formatDb (db), dontSendNotification);
         r.value.setColour (Label::textColourId, db <= kMinDb ? col::dim : col::text);
     }
 }
