@@ -34,7 +34,8 @@ jobs:
           lipo -archs "$OUT/Contents/MacOS/SIX" | tee -a tests.txt
           mkdir -p dist/root/Library/Audio/Plug-Ins/VST3 dist/out
           cp -R "$OUT" dist/root/Library/Audio/Plug-Ins/VST3/
-          pkgbuild --root dist/root --identifier com.sixaudio.six.vst3 --version 1.0.0 --install-location / dist/out/SIX-Installer.pkg
+          chmod +x installer/scripts/postinstall
+          pkgbuild --root dist/root --scripts installer/scripts --identifier com.sixaudio.six.vst3 --version 1.0.0 --install-location / dist/out/SIX-Installer.pkg
           cp -R "$OUT" dist/out/
           cp installer/Install-SIX.command dist/out/
           chmod +x dist/out/Install-SIX.command

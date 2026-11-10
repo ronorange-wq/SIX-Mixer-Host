@@ -1,0 +1,9 @@
+#!/bin/bash
+# Runs after SIX-Installer.pkg copies the plug-in: clear the download quarantine and re-apply
+# the local signature so macOS lets Ableton Live load SIX.
+P="/Library/Audio/Plug-Ins/VST3/SIX.vst3"
+if [ -d "$P" ]; then
+    /usr/bin/xattr -cr "$P" || true
+    /usr/bin/codesign --force --deep --sign - "$P" || true
+fi
+exit 0
