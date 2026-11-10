@@ -72,31 +72,64 @@ namespace
     }
 }
 
+namespace
+{
+    void addGlobal (AudioProcessorValueTreeState::ParameterLayout& layout, int which)
+    {
+        if (which == -1)
+        {
+            StringArray targets { String (CharPointer_UTF8 ("\xe2\x80\x94")) };
+            for (int i = 0; i < kNumPresets; ++i) targets.add (twoDigits (i + 1));
+            layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::presetTarget, 1 }, "Preset Target", targets, 0));
+        }
+        else if (which == -2)
+            layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::morphMode, 1 }, "Morph Sync/ms", StringArray { "Sync", "ms" }, 0));
+        else if (which == -3)
+            layout.add (std::make_unique<AudioParameterFloat> (ParameterID { gid::morphMs, 1 }, "Morph Time ms",
+                NormalisableRange<float> (0.0f, 10000.0f, 1.0f, 0.3f), 350.0f,
+                AudioParameterFloatAttributes().withLabel ("ms")
+                    .withStringFromValueFunction ([] (float v, int) { return String (roundToInt (v)) + " ms"; })
+                    .withValueFromStringFunction ([] (const String& t) { return t.retainCharacters ("0123456789.").getFloatValue(); })));
+        else if (which == -4)
+            layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::morphSync, 1 }, "Morph Musical Time", syncChoiceNames(), 4));
+    }
+}
+
 AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
     AudioProcessorValueTreeState::ParameterLayout layout;
 
-    // Order matters for Live (it lists the first 128 parameters without Configure):
-    // mixer-level controls first, then the Map lanes, then channels, sends and bypasses.
-    // IDs are independent of this order.
-    StringArray targets { String (CharPointer_UTF8 ("\xe2\x80\x94")) };
-    for (int i = 0; i < kNumPresets; ++i) targets.add (twoDigits (i + 1));
-    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::presetTarget, 1 }, "Preset Target", targets, 0));
-    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::morphMode, 1 }, "Morph Sync/ms", StringArray { "Sync", "ms" }, 0));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { gid::morphMs, 1 }, "Morph Time ms",
-        NormalisableRange<float> (0.0f, 10000.0f, 1.0f, 0.3f), 350.0f,
-        AudioParameterFloatAttributes().withLabel ("ms")
-            .withStringFromValueFunction ([] (float v, int) { return String (roundToInt (v)) + " ms"; })
-            .withValueFromStringFunction ([] (const String& t) { return t.retainCharacters ("0123456789.").getFloatValue(); })));
-    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { gid::morphSync, 1 }, "Morph Musical Time", syncChoiceNames(), 4));
-
-
+    // Push 3 shows plug-in parameters in banks of 8, in this order (IDs don't depend on it):
+    //  banks 1-6: one channel each = its 5 send levels (to the other channels, in channel
+    //             order), then its Send In, Pan and Fader
+    //  bank 7: Solo 01-06 + Preset Target + Morph ms     bank 8: Mono 01-06 + Sync/ms + Musical time
+    //  bank 9: Out 01-06 + Map 01-02                     bank 10: Live In 01-06 + Map 03-04
+    //  then the sends' Pre/Post, the slot Bypasses and the remaining Map lanes.
     std::vector<int> order;
-    for (int k = 0; k < kNumMaps; ++k) order.push_back (mapControl (k));
-    for (int i = 0; i < kMapBase; ++i) order.push_back (i);
-
+    order.reserve ((size_t) kNumControls + 4);
+    auto chans = [&] (ChannelControl cc) { for (int ch = 0; ch < kNumChannels; ++ch) order.push_back (channelControl (ch, cc)); };
+    int nextMap = 0;
+    auto maps = [&] (int n) { for (int i = 0; i < n && nextMap < kNumMaps; ++i) order.push_back (mapControl (nextMap++)); };
+    for (int ch = 0; ch < kNumChannels; ++ch)
+    {
+        for (int k = 0; k < kNumSends; ++k) order.push_back (sendLevelControl (ch, sendTarget (ch, k)));
+        order.push_back (channelControl (ch, ccSendIn));
+        order.push_back (channelControl (ch, ccPan));
+        order.push_back (channelControl (ch, ccFader));
+    }
+    for (int ch = 0; ch < kNumChannels; ++ch) order.push_back (soloControl (ch));
+    order.push_back (-1); order.push_back (-3);                     // -1 preset target, -3 morph ms
+    chans (ccMono);   order.push_back (-2); order.push_back (-4);   // -2 morph mode, -4 musical time
+    chans (ccOut);    maps (2);
+    chans (ccLiveIn); maps (2);
+    for (int ch = 0; ch < kNumChannels; ++ch)
+        for (int k = 0; k < kNumSends; ++k) order.push_back (sendModeControl (ch, sendTarget (ch, k)));
+    for (int ch = 0; ch < kNumChannels; ++ch)
+        for (int sl = 0; sl < kNumSlots; ++sl) order.push_back (bypassControl (ch, sl));
+    maps (kNumMaps);
     for (int i : order)
     {
+        if (i < 0) { addGlobal (layout, i); continue; }
         const auto& c = controlInfo (i);
         const ParameterID pid { c.paramID, 1 };
 

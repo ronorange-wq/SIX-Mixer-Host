@@ -125,7 +125,7 @@ private:
         std::array<SlotState, (size_t) kNumSlots> slots;
         DelayRing preRing, postRing;
         juce::AudioBuffer<float> work, tmpA, tmpB, sendBuf;
-        Ramp fader, sendIn, mono, liveIn, pan, law, duck;
+        Ramp fader, sendIn, mono, liveIn, pan, law, duck, soloGate;
         std::array<Ramp, (size_t) kNumOutChoices> out;   // [0] master, [1+d] -> channel d
         int arrival = 0, chainLatency = 0, outLatency = 0;
         bool monoDetected = false;

@@ -79,6 +79,8 @@ void AudioEngine::prepare (double sr, int mb)
         c.pan.step = 2.0f / (0.03f * fsr);
         c.law.step = 1.0f / (0.05f * fsr);
         c.duck.step = 1.0f / (0.005f * fsr);
+        c.soloGate.step = 1.0f / (0.01f * fsr);
+        c.soloGate.cur = c.soloGate.tgt = 1.0f;
         c.duck.cur = c.duck.tgt = 1.0f;
         for (auto& o : c.out) o.step = 1.0f / (0.03f * fsr);
     }
@@ -330,7 +332,7 @@ void AudioEngine::startMorph (int p, const BlockContext& ctxIn) noexcept
     for (int i = 0; i < kNumControls; ++i)
     {
         const bool changedNow = params.raw[(size_t) i]->load() != lastParam[(size_t) i];
-        if (changedNow) continue;
+        if (changedNow || isSoloControl (i)) continue;   // solo is monitoring, never morphed
         hold[(size_t) i] = true;
         morphing[(size_t) i] = true;
         holdVal[(size_t) i] = eff[(size_t) i];
@@ -755,14 +757,16 @@ void AudioEngine::processChunk (float* outL, float* outR, const float* inL, cons
             chans[(size_t) s].preRing.addTo (sl, sr, n, delay, g0 * (1.0f - p0), g1 * (1.0f - p1));
             chans[(size_t) s].postRing.addTo (sl, sr, n, delay, g0 * p0, g1 * p1);
         }
-        c.sendIn.advance (n, a, b);
         if (anySend)
         {
-            applyRamp (sl, n, a, b);
-            applyRamp (sr, n, a, b);
             FloatVectorOperations::add (wl, sl, n);
             FloatVectorOperations::add (wr, sr, n);
         }
+        // Send In = input level of the channel: everything that enters it
+        // (Live input, Outs of other channels and sends).
+        c.sendIn.advance (n, a, b);
+        applyRamp (wl, n, a, b);
+        applyRamp (wr, n, a, b);
 
         // c) Mono / Stereo
         c.mono.advance (n, a, b);
@@ -840,14 +844,36 @@ void AudioEngine::processChunk (float* outL, float* outR, const float* inL, cons
         if (peakRv > peakR[(size_t) ch].load (std::memory_order_relaxed)) peakR[(size_t) ch].store (peakRv, std::memory_order_relaxed);
     }
 
-    // 4. Master sum, aligned to the total latency
+    // 4. Solo: a channel reaches Master only if it is soloed or fed (directly or further
+    //    down the chain) by a soloed channel. Channels feeding a soloed one keep working.
+    {
+        bool anySolo = false;
+        for (int ch = 0; ch < kNumChannels; ++ch) anySolo |= eff[(size_t) soloControl (ch)] > 0.5f;
+        bool pass[kNumChannels] {};
+        for (int ch = 0; ch < kNumChannels; ++ch) pass[ch] = ! anySolo || eff[(size_t) soloControl (ch)] > 0.5f;
+        if (anySolo)
+            for (int oi = 0; oi < kNumChannels; ++oi)   // topological order: propagate downstream
+            {
+                const int s = order[(size_t) oi];
+                if (! pass[s]) continue;
+                for (int d = 0; d < kNumChannels; ++d)
+                    if (d != s && (chans[(size_t) s].out[(size_t) d + 1].live() || sendGain[(size_t) s][(size_t) d].live()))
+                        pass[d] = true;
+            }
+        for (int ch = 0; ch < kNumChannels; ++ch) chans[(size_t) ch].soloGate.tgt = pass[ch] ? 1.0f : 0.0f;
+    }
+
+    // 5. Master sum, aligned to the total latency
     FloatVectorOperations::clear (outL, n);
     if (outR != outL) FloatVectorOperations::clear (outR, n);
     for (int ch = 0; ch < kNumChannels; ++ch)
     {
         auto& c = chans[(size_t) ch];
-        float a, b;
+        float a, b, ga, gb;
         c.out[0].advance (n, a, b);
+        c.soloGate.advance (n, ga, gb);
+        a *= ga;
+        b *= gb;
         if (outR == outL)
         {
             auto& t = c.tmpB;   // mono output bus: fold to mono

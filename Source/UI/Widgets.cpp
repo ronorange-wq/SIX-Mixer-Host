@@ -98,15 +98,16 @@ void ControlPill::paint (Graphics& g)
     const bool isOn = proc.engine.effective[(size_t) control].load() > 0.5f;
     auto r = getLocalBounds().toFloat().reduced (1.0f);
     const float rad = r.getHeight() * 0.5f;
+    const auto accent = onColour.isTransparent() ? col::teal : onColour;
     if (isOn && filled)
     {
-        g.setColour (col::teal.withAlpha (0.18f));
+        g.setColour (accent.withAlpha (onColour.isTransparent() ? 0.18f : 0.9f));
         g.fillRoundedRectangle (r, rad);
     }
-    g.setColour (isOn ? col::teal : col::border.brighter (0.2f));
+    g.setColour (isOn ? accent : col::border.brighter (0.2f));
     g.drawRoundedRectangle (r, rad, 1.2f);
-    g.setColour (isOn ? col::text : col::muted);
-    g.setFont (sixFont (r.getHeight() * 0.58f));
+    g.setColour (isOn ? (onColour.isTransparent() ? col::text : col::bgBottom) : col::muted);
+    g.setFont (sixFont (r.getHeight() * 0.58f, ! onColour.isTransparent()));
     g.drawText (isOn ? on : off, r, Justification::centred);
 }
 

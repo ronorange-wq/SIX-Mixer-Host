@@ -35,7 +35,8 @@ constexpr int kSendBase    = kChannelBase + kNumChannels * ccNumPerChannel;     
 constexpr int kNumSendPairs = kNumChannels * kNumSends;                          // 30
 constexpr int kBypassBase  = kSendBase + kNumSendPairs * 2;                      // 96
 constexpr int kMapBase     = kBypassBase + kNumChannels * kNumSlots;             // 120
-constexpr int kNumControls = kMapBase + kNumMaps;                                // 152
+constexpr int kSoloBase    = kMapBase + kNumMaps;                                // 152 (added later: kept last so saved indices never move)
+constexpr int kNumControls = kSoloBase + kNumChannels;                           // 158
 
 using ControlValues = std::array<float, (size_t) kNumControls>;
 
@@ -50,6 +51,8 @@ inline int sendLevelControl (int src, int dst) noexcept { return kSendBase + (sr
 inline int sendModeControl  (int src, int dst) noexcept { return sendLevelControl (src, dst) + 1; }   // 0 = Pre, 1 = Post
 inline int bypassControl (int ch, int slot) noexcept { return kBypassBase + ch * kNumSlots + slot; }
 inline int mapControl (int k) noexcept { return kMapBase + k; }
+inline int soloControl (int ch) noexcept { return kSoloBase + ch; }
+inline bool isSoloControl (int i) noexcept { return i >= kSoloBase && i < kSoloBase + kNumChannels; }
 
 struct ControlInfo
 {

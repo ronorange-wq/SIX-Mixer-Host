@@ -49,6 +49,10 @@ namespace
             }
         }
 
+        for (int ch = 0; ch < kNumChannels; ++ch)
+            t[(size_t) soloControl (ch)] = { ControlKind::toggle, "ch" + twoDigits (ch + 1) + "_solo", "CH " + twoDigits (ch + 1) + " Solo",
+                                             0.0f, 1.0f, 0.0f, ch, -1, -1 };
+
         for (int k = 0; k < kNumMaps; ++k)
             t[(size_t) mapControl (k)] = { ControlKind::map, "map_" + twoDigits (k + 1), "Map " + twoDigits (k + 1),
                                            0.0f, 1.0f, 0.0f, -1, -1, k };

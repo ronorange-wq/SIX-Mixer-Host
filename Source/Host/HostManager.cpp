@@ -296,6 +296,7 @@ bool HostManager::updatePreset (int i)
     {
         const auto k = controlInfo (c).kind;
         if (k == ControlKind::toggle || k == ControlKind::out) p.values[(size_t) c] = (float) roundToInt (p.values[(size_t) c]);
+        if (isSoloControl (c)) p.values[(size_t) c] = 0.0f;
     }
 
     for (int ch = 0; ch < kNumChannels; ++ch)

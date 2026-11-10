@@ -24,7 +24,7 @@ private:
     bool selected = false;
 
     juce::Label number, name;
-    ControlPill liveIn;
+    ControlPill liveIn, solo;
     ControlSlider sendIn, pan, fader;
     juce::Label sendInLabel, sendInValue, panLabel, panValue, faderValue, outLabel;
     ControlPill mono;

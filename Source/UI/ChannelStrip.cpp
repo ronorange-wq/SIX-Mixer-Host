@@ -7,6 +7,7 @@ using namespace juce;
 ChannelStrip::ChannelStrip (SIXAudioProcessor& p, int c)
     : proc (p), ch (c),
       liveIn (p, channelControl (c, ccLiveIn), "IN", "IN"),
+      solo (p, soloControl (c), "S", "S"),
       sendIn (p, channelControl (c, ccSendIn), Slider::RotaryHorizontalVerticalDrag),
       pan (p, channelControl (c, ccPan), Slider::RotaryHorizontalVerticalDrag),
       fader (p, channelControl (c, ccFader), Slider::LinearVertical),
@@ -27,6 +28,9 @@ ChannelStrip::ChannelStrip (SIXAudioProcessor& p, int c)
 
     liveIn.setTooltip ("Live In: feed this channel with the track's input");
     addAndMakeVisible (liveIn);
+    solo.onColour = Colour (0xffffd24a);
+    solo.setTooltip ("Solo: hear only this channel (and what it feeds)");
+    addAndMakeVisible (solo);
 
     for (auto* l : { &sendInLabel, &panLabel, &outLabel })
     {
@@ -50,7 +54,7 @@ ChannelStrip::ChannelStrip (SIXAudioProcessor& p, int c)
     faderValue.setJustificationType (Justification::centred);
     sendInValue.setJustificationType (Justification::centredRight);
 
-    sendIn.setTooltip ("Send In: level of all sends arriving at this channel");
+    sendIn.setTooltip ("Send In: input level of everything entering this channel (Live input, Outs and sends)");
     pan.setTooltip ("Pan (double-click: centre)");
     pan.setDoubleClickReturnValue (true, 0.0);
     fader.setDoubleClickReturnValue (true, 0.0);
@@ -93,7 +97,8 @@ void ChannelStrip::paint (Graphics& g)
 void ChannelStrip::resized()
 {
     number.setBounds (18, 12, 46, 36);
-    name.setBounds (62, 12, getWidth() - 62 - 44, 36);
+    name.setBounds (62, 12, getWidth() - 62 - 82, 36);
+    solo.setBounds (getWidth() - 82, 20, 30, 20);
     liveIn.setBounds (getWidth() - 46, 20, 34, 20);
 
     sendIn.setBounds (24, 70, 38, 38);
@@ -115,7 +120,7 @@ void ChannelStrip::resized()
 
 void ChannelStrip::refresh()
 {
-    for (auto* r : std::initializer_list<Refreshable*> { &sendIn, &pan, &fader, &mono, &liveIn, &out, &meter }) r->refresh();
+    for (auto* r : std::initializer_list<Refreshable*> { &sendIn, &pan, &fader, &mono, &liveIn, &solo, &out, &meter }) r->refresh();
     const auto& e = proc.engine.effective;
     const bool running = proc.engine.processedBlocks.load() > 0;
     auto val = [&] (int i) { return running ? e[(size_t) i].load() : proc.params.raw[(size_t) i]->load(); };

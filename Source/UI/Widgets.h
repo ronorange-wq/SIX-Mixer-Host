@@ -42,6 +42,7 @@ public:
     void mouseUp (const juce::MouseEvent&) override;
     void setControl (int c) { control = c; repaint(); }
     bool filled = true;          // filled when "on"
+    juce::Colour onColour;       // default: teal
 private:
     SIXAudioProcessor& proc;
     int control;

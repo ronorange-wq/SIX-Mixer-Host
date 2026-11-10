@@ -559,6 +559,39 @@ static void testSafeScan()
     CHECK (r.p->host->loadIntoSlot (0, 0, real[0], err), "loads after resolving");
 }
 
+static void testSoloSendInPush()
+{
+    std::cout << "[Send In as channel input level, Solo, Push 3 bank order]" << std::endl;
+    Rig r;
+    r.set ("ch01_sendin", -6.0f);
+    auto& a = r.run (20, Rig::dc);
+    CHECK_NEAR (a.getSample (0, 10), 0.5 * Decibels::decibelsToGain (-6.0), 1e-3, "Send In now scales the Live input too");
+    r.set ("ch01_sendin", 0.0f);
+    // 01 -> Master, 02 gets Live in -> Master, 02 sends to 03 (reverb style), 03 -> Master
+    r.set ("ch02_livein", 1.0f);
+    r.set ("ch02_to03_level", 0.0f);
+    auto& b = r.run (20, Rig::dc);
+    CHECK_NEAR (b.getSample (0, 10), 1.5, 1e-3, "three paths summed (01 + 02 + 03)");
+    r.set ("ch02_solo", 1.0f);
+    auto& c = r.run (20, Rig::dc);
+    CHECK_NEAR (c.getSample (0, 10), 1.0, 1e-3, "solo 02: 02 + what it feeds (03), 01 muted");
+    r.set ("ch01_solo", 1.0f);
+    auto& d = r.run (20, Rig::dc);
+    CHECK_NEAR (d.getSample (0, 10), 1.5, 1e-3, "solo 01 + 02");
+    r.set ("ch01_solo", 0.0f); r.set ("ch02_solo", 0.0f);
+    r.set ("ch03_solo", 1.0f);
+    auto& e = r.run (20, Rig::dc);
+    CHECK_NEAR (e.getSample (0, 10), 0.5, 1e-3, "solo 03 alone: its send source keeps feeding it");
+    auto& ps = r.p->getParameters();
+    auto nm = [&] (int i) { return dynamic_cast<AudioProcessorParameterWithID*> (ps[i])->getName (64); };
+    const auto arrow = String (CharPointer_UTF8 (" \xe2\x86\x92 "));
+    CHECK (nm (0) == "CH 01" + arrow + "02 Send Level" && nm (4) == "CH 01" + arrow + "06 Send Level", "Push bank 1 = CH 01 sends: " << nm (0));
+    CHECK (nm (5) == "CH 01 Send In" && nm (6) == "CH 01 Pan" && nm (7) == "CH 01 Fader", "bank 1 ends with Send In, Pan, Fader");
+    CHECK (nm (8) == "CH 02" + arrow + "01 Send Level" && nm (15) == "CH 02 Fader", "Push bank 2 = CH 02");
+    CHECK (nm (40) == "CH 06" + arrow + "01 Send Level" && nm (47) == "CH 06 Fader", "Push bank 6 = CH 06");
+    CHECK (nm (48) == "CH 01 Solo" && nm (54) == "Preset Target", "bank 7 solos + preset target");
+}
+
 static void testOffline()
 {
     std::cout << "[offline render determinism]" << std::endl;
@@ -808,6 +841,7 @@ int main (int argc, char** argv)
     testPluginMorphAndState();
     testFolders();
     testSafeScan();
+    testSoloSendInPush();
     testOffline();
     removeTestBundles();
     std::cout << std::endl << checks - failures << "/" << checks << " checks passed" << std::endl;
