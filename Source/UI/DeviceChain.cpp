@@ -57,9 +57,13 @@ void DeviceChain::refresh()
     for (auto& s : slots) s->refresh();
 }
 
-void DeviceChain::loadDescription (int s, const PluginDescription& d)
+void DeviceChain::loadDescription (int s, const PluginDescription& light)
 {
     String err;
+    auto real = proc.host->catalog.resolveForLoad (light, err);
+    if (real.isEmpty()) { if (onMessage) onMessage (err); return; }
+    if (real.size() > 1) { chooseAndLoad (s, real, this); return; }
+    const auto d = real[0];
     if (! proc.host->loadIntoSlot (channel, s, d, err))
     {
         if (onMessage) onMessage (err);

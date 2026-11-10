@@ -22,7 +22,11 @@ public:
     juce::Array<juce::PluginDescription> search (const juce::String& text) const;
 
     // Message thread: the effects inside one .vst3 / .component bundle (for Finder drops).
-    juce::Array<juce::PluginDescription> findTypesForFile (const juce::File& f, juce::String& error);
+    juce::Array<juce::PluginDescription> findTypesForFile (const juce::File& f, juce::String& error, const juce::String& identifier = {});
+
+    // Browser entries are "light" (built without loading the plug-in). This turns one into the
+    // real description(s) right before loading - only the chosen plug-in is opened.
+    juce::Array<juce::PluginDescription> resolveForLoad (const juce::PluginDescription& d, juce::String& error);
 
     // Interprets dropped text (path, URL or a plug-in name, e.g. from Ableton's browser).
     juce::Array<juce::PluginDescription> resolveDroppedText (const juce::String& text, juce::String& howResolved);
@@ -61,11 +65,11 @@ private:
 
     juce::AudioPluginFormatManager& formats;
     juce::KnownPluginList known;
+    juce::Array<juce::PluginDescription> resolved;
     std::atomic<bool> scanning { false };
     std::atomic<float> progress { 0.0f };
     juce::String status;
     mutable juce::CriticalSection statusLock;
-    std::unique_ptr<juce::PluginDirectoryScanner> mtScanner;   // AU (message thread)
     bool rescanRequested = false;
     std::atomic<bool> listChanged { false };
 };

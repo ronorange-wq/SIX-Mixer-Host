@@ -486,14 +486,41 @@ static void testPluginMorphAndState()
     }
 }
 
+// Copies the test plug-ins where the Browser scan looks and runs the (load-free) scan.
+static File testVst3Dir() { return File::getSpecialLocation (File::userHomeDirectory).getChildFile (".vst3"); }
+static void installTestBundles()
+{
+    testVst3Dir().createDirectory();
+    for (auto n : { "SIXTestComp", "SIXTestLatency", "SIXTestWidener" })
+        if (! testVst3Dir().getChildFile (String (n) + ".vst3").exists())
+            bundle (n).copyDirectoryTo (testVst3Dir().getChildFile (String (n) + ".vst3"));
+}
+static void removeTestBundles()
+{
+    for (auto n : { "SIXTestComp", "SIXTestLatency", "SIXTestWidener" })
+        testVst3Dir().getChildFile (String (n) + ".vst3").deleteRecursively();
+}
+static void scanCatalog (PluginCatalog& cat)
+{
+    installTestBundles();
+    cat.startScan (true);
+    for (int i = 0; i < 300 && cat.isScanning(); ++i) MessageManager::getInstance()->runDispatchLoopUntil (20);
+}
+static PluginDescription lightNamed (PluginCatalog& cat, const String& name)
+{
+    for (auto& d : cat.getEffects()) if (d.name == name) return d;
+    return {};
+}
+
 static void testFolders()
 {
     std::cout << "[Browse folders: create, file, rename, persist, delete]" << std::endl;
     Rig r;
     auto& cat = r.p->host->catalog;
     while (cat.numFolders() > 0) cat.deleteFolder (0);
-    auto comp = describe (r, "SIXTestComp");
-    auto lat = describe (r, "SIXTestLatency");
+    scanCatalog (cat);
+    auto comp = lightNamed (cat, "SIXTestComp");
+    auto lat = lightNamed (cat, "SIXTestLatency");
     const int rev = cat.createFolder ("Reverb");
     const int del = cat.createFolder ("Delay");
     CHECK (cat.numFolders() == 2 && cat.folderName (rev) == "Reverb", "folders created");
@@ -511,8 +538,25 @@ static void testFolders()
     cat.removeFromFolder (del, comp);
     CHECK (cat.folderSize (del) == 1, "remove from folder");
     cat.deleteFolder (rev);
-    CHECK (cat.numFolders() == 1 && cat.getEffects().size() >= 3, "deleting a folder keeps the plug-ins");
+    CHECK (cat.numFolders() == 1 && cat.isInFolder (0, lat), "deleting a folder keeps the others");
     while (cat.numFolders() > 0) cat.deleteFolder (0);
+}
+
+static void testSafeScan()
+{
+    std::cout << "[Browser scan never loads plug-ins]" << std::endl;
+    Rig r;
+    auto& cat = r.p->host->catalog;
+    scanCatalog (cat);
+    auto effects = cat.getEffects();
+    PluginDescription comp;
+    for (auto& d : effects) if (d.name == "SIXTestComp") comp = d;
+    CHECK (comp.name == "SIXTestComp" && comp.version == "six-light", "listed from moduleinfo.json without loading it");
+    CHECK (r.p->host->poolSize() == 0, "nothing instantiated by the scan");
+    String err;
+    auto real = cat.resolveForLoad (comp, err);
+    CHECK (real.size() == 1 && real[0].version != "six-light", "resolved to the real plug-in when chosen: " << err);
+    CHECK (r.p->host->loadIntoSlot (0, 0, real[0], err), "loads after resolving");
 }
 
 static void testOffline()
@@ -614,6 +658,7 @@ static void testUi()
     r.run (4, Rig::dc);
     std::unique_ptr<AudioProcessorEditor> ed (r.p->createEditor());
     ed->setSize (1280, 784);
+    scanCatalog (r.p->host->catalog);
     Array<DeviceSlot*> slots;
     findAll (*ed, slots);
     CHECK (slots.size() == 4, "four device slots shown");
@@ -753,7 +798,7 @@ int main (int argc, char** argv)
     ScopedJuceInitialiser_GUI init;
     pluginDir = argc > 1 ? File (argv[1]) : File::getCurrentWorkingDirectory();
     if (argc > 2 && String (argv[2]) == "--stress") { stress (argc > 3 ? String (argv[3]).getIntValue() : 10); std::cout << checks - failures << "/" << checks << " checks passed" << std::endl; return failures == 0 ? 0 : 1; }
-    if (argc > 2 && String (argv[2]) == "--ui") { testUi(); std::cout << checks - failures << "/" << checks << " checks passed" << std::endl; return failures == 0 ? 0 : 1; }
+    if (argc > 2 && String (argv[2]) == "--ui") { testUi(); removeTestBundles(); std::cout << checks - failures << "/" << checks << " checks passed" << std::endl; return failures == 0 ? 0 : 1; }
     if (argc > 3 && String (argv[2]) == "--snapshot") { snapshot (File (argv[3]), argc > 4); return 0; }
     testDefaults();
     testMonoPan();
@@ -762,7 +807,9 @@ int main (int argc, char** argv)
     testMorph();
     testPluginMorphAndState();
     testFolders();
+    testSafeScan();
     testOffline();
+    removeTestBundles();
     std::cout << std::endl << checks - failures << "/" << checks << " checks passed" << std::endl;
     return failures == 0 ? 0 : 1;
 }
