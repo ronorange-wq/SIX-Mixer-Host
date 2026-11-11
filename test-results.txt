@@ -1,0 +1,18 @@
+[defaults: Live stereo in -> CH 01 -> Master, unity]
+[mono / stereo / pan laws]
+[serial Out, Pre/Post sends, feedback-loop protection]
+[hosting real VST3s: EQ->Comp->Sat serial + Reverb send, latency, mono->stereo]
+[presets & morph: ms, sync, retrigger, automation priority]
+[prepared plug-in swap on morph, state save/restore, missing plug-in]
+[Browse folders: create, file, rename, persist, delete]
+[Browser scan never loads plug-ins]
+[Send In as channel input level, Solo, Push 3 bank order]
+[offline render determinism]
+
+213/213 checks passed
+[UI: Finder drop, Browse drag, reorder drag, preset buttons]
+16/16 checks passed
+[stress: real audio thread + random UI/host operations for 15 s]
+  ops 1581, restores 27, audio blocks 7103, pool 63, in slots 15, prepared 48
+3/3 checks passed
+x86_64 arm64

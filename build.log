@@ -1,0 +1,311 @@
+[0/2] Re-checking globbed directories...
+[1/193] Building CXX object CMakeFiles/SIX.dir/Source/Core/Controls.cpp.o
+[2/193] Building CXX object CMakeFiles/SIX.dir/Source/Core/Routing.cpp.o
+[3/193] Building CXX object CMakeFiles/SIX.dir/Source/Engine/HostedInstance.cpp.o
+[4/193] Building CXX object CMakeFiles/SIX.dir/Source/Core/Params.cpp.o
+[5/193] Building CXX object CMakeFiles/SIX.dir/Source/Host/PluginCatalog.cpp.o
+[6/193] Building CXX object CMakeFiles/SIX.dir/Source/Engine/AudioEngine.cpp.o
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:29:15: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+   29 |         if (a == b) { if (a != 1.0f) FloatVectorOperations::multiply (d, a, n); return; }
+      |             ~ ^  ~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:334:64: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  334 |         const bool changedNow = params.raw[(size_t) i]->load() != lastParam[(size_t) i];
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:405:15: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  405 |         if (p != lastParam[(size_t) i])
+      |             ~ ^  ~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:613:32: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  613 |         const bool changed = v != m.lastValue || targets[0] != m.lastInst;
+      |                              ~ ^  ~~~~~~~~~~~
+4 warnings generated.
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:29:15: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+   29 |         if (a == b) { if (a != 1.0f) FloatVectorOperations::multiply (d, a, n); return; }
+      |             ~ ^  ~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:334:64: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  334 |         const bool changedNow = params.raw[(size_t) i]->load() != lastParam[(size_t) i];
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:405:15: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  405 |         if (p != lastParam[(size_t) i])
+      |             ~ ^  ~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Engine/AudioEngine.cpp:613:32: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  613 |         const bool changed = v != m.lastValue || targets[0] != m.lastInst;
+      |                              ~ ^  ~~~~~~~~~~~
+4 warnings generated.
+[7/193] Building CXX object CMakeFiles/SIX.dir/Source/Host/HostManager.cpp.o
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Host/HostManager.cpp:206:44: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  206 |         if (byp[(size_t) perm[(size_t) i]] != byp[(size_t) i])
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Host/HostManager.cpp:850:97: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  850 |         const bool held = engine.held[(size_t) i].load() && engine.seenParam[(size_t) i].load() == params.raw[(size_t) i]->load();
+      |                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Host/HostManager.cpp:206:44: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  206 |         if (byp[(size_t) perm[(size_t) i]] != byp[(size_t) i])
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/Host/HostManager.cpp:850:97: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  850 |         const bool held = engine.held[(size_t) i].load() && engine.seenParam[(size_t) i].load() == params.raw[(size_t) i]->load();
+      |                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings generated.
+[8/193] Building CXX object CMakeFiles/SIX.dir/Source/Host/PresetBank.cpp.o
+[9/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/SixLookAndFeel.cpp.o
+[10/193] Building CXX object CMakeFiles/SIX.dir/Source/PluginProcessor.cpp.o
+[11/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/Widgets.cpp.o
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/UI/Widgets.cpp:181:124: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  181 |     if (std::abs (proc.engine.effective[(size_t) control].load() - v) > 0.01f || proc.params.raw[(size_t) control]->load() != v)
+      |                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~
+1 warning generated.
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/Source/UI/Widgets.cpp:181:124: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  181 |     if (std::abs (proc.engine.effective[(size_t) control].load() - v) > 0.01f || proc.params.raw[(size_t) control]->load() != v)
+      |                                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~
+1 warning generated.
+[12/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/SendsPanel.cpp.o
+[13/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/ChannelStrip.cpp.o
+[14/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/PresetBar.cpp.o
+[15/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/PluginWindows.cpp.o
+[16/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/DeviceChain.cpp.o
+[17/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/BrowserPanel.cpp.o
+[18/193] Building CXX object CMakeFiles/SIX.dir/Source/UI/PluginEditor.cpp.o
+[19/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_gui_extra/juce_gui_extra.mm.o
+[20/193] Building C object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[21/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_processors/juce_audio_processors.mm.o
+[22/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o
+[23/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o
+[24/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[25/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o
+[26/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[27/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[28/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_core/juce_core.mm.o
+[29/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o
+[30/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o
+[31/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
+[32/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm.o
+In file included from /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm:35:
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.cpp:61:2: warning: This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored [-W#pragma-messages]
+   61 |  JUCE_COMPILER_WARNING ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_core/system/juce_PlatformDefs.h:292:38: note: expanded from macro 'JUCE_COMPILER_WARNING'
+  292 |  #define JUCE_COMPILER_WARNING(msg)  _Pragma (JUCE_STRINGIFY (message (msg)))
+      |                                      ^
+<scratch space>:124:2: note: expanded from here
+  124 |  message ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+1 warning generated.
+In file included from /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm:35:
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.cpp:61:2: warning: This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored [-W#pragma-messages]
+   61 |  JUCE_COMPILER_WARNING ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_core/system/juce_PlatformDefs.h:292:38: note: expanded from macro 'JUCE_COMPILER_WARNING'
+  292 |  #define JUCE_COMPILER_WARNING(msg)  _Pragma (JUCE_STRINGIFY (message (msg)))
+      |                                      ^
+<scratch space>:37:2: note: expanded from here
+   37 |  message ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+1 warning generated.
+[33/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+[34/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
+[35/193] Building CXX object CMakeFiles/SIX_vst3_helper.dir/_deps/juce-src/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.mm.o
+[36/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
+[37/193] Building CXX object CMakeFiles/SIX.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+[38/193] Building CXX object CMakeFiles/SIXTestComp.dir/Tests/TestPlugins/SIXTestComp.cpp.o
+[39/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_processors/juce_audio_processors.mm.o
+[40/193] Building C object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[41/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_gui_extra/juce_gui_extra.mm.o
+[42/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o
+[43/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o
+[44/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[45/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_core/juce_core.mm.o
+[46/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[47/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[48/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o
+[49/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o
+[50/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+[51/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o
+[52/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
+[53/193] Building CXX object CMakeFiles/SIXTestComp_vst3_helper.dir/_deps/juce-src/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.mm.o
+[54/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm.o
+[55/193] Building CXX object CMakeFiles/SIXTestLatency.dir/Tests/TestPlugins/SIXTestLatency.cpp.o
+[56/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
+[57/193] Building CXX object CMakeFiles/SIXTestComp.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+[58/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_processors/juce_audio_processors.mm.o
+[59/193] Building C object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[60/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_gui_extra/juce_gui_extra.mm.o
+[61/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o
+[62/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o
+[63/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[64/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_core/juce_core.mm.o
+[65/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o
+[66/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[67/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[68/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o
+[69/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o
+[70/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+[71/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
+[72/193] Building CXX object CMakeFiles/SIXTestLatency_vst3_helper.dir/_deps/juce-src/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.mm.o
+[73/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm.o
+[74/193] Building CXX object CMakeFiles/SIXTestWidener.dir/Tests/TestPlugins/SIXTestWidener.cpp.o
+[75/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+[76/193] Building CXX object CMakeFiles/SIXTestLatency.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
+[77/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_processors/juce_audio_processors.mm.o
+[78/193] Building C object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[79/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_gui_extra/juce_gui_extra.mm.o
+[80/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o
+[81/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o
+[82/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_core/juce_core.mm.o
+[83/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[84/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[85/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[86/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o
+[87/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o
+[88/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+[89/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o
+[90/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
+[91/193] Building CXX object CMakeFiles/SIXTestWidener_vst3_helper.dir/_deps/juce-src/modules/juce_audio_plugin_client/VST3/juce_VST3ManifestHelper.mm.o
+[92/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm.o
+[93/193] Linking CXX executable SIX_vst3_helper
+[94/193] Linking CXX static library SIXTestComp_artefacts/Release/libSIXTestComp_SharedCode.a
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestComp_artefacts/Release/libSIXTestComp_SharedCode.a(juce_audio_processors_headless_ara.cpp.o) has no symbols
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestComp_artefacts/Release/libSIXTestComp_SharedCode.a(juce_audio_processors_headless_lv2_libs.cpp.o) has no symbols
+[95/193] Linking CXX executable SIXTestComp_vst3_helper
+[96/193] Linking CXX static library SIXTestLatency_artefacts/Release/libSIXTestLatency_SharedCode.a
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestLatency_artefacts/Release/libSIXTestLatency_SharedCode.a(juce_audio_processors_headless_ara.cpp.o) has no symbols
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestLatency_artefacts/Release/libSIXTestLatency_SharedCode.a(juce_audio_processors_headless_lv2_libs.cpp.o) has no symbols
+[97/193] Linking CXX static library SIX_artefacts/Release/libSIX_SharedCode.a
+[98/193] Linking CXX executable SIXTestLatency_vst3_helper
+[99/193] Linking CXX executable SIXTestWidener_vst3_helper
+[100/193] Generating SIX_artefacts/JuceLibraryCode/SIX_VST3/PkgInfo
+[101/193] Generating SIXTestComp_artefacts/JuceLibraryCode/SIXTestComp_VST3/PkgInfo
+[102/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[103/193] Generating SIXTestLatency_artefacts/JuceLibraryCode/SIXTestLatency_VST3/PkgInfo
+[104/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[105/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[106/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[107/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[108/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[109/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[110/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[111/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[112/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[113/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Core/Controls.cpp.o
+[114/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Core/Routing.cpp.o
+[115/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
+[116/193] Building CXX object CMakeFiles/SIXTestWidener.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+[117/193] Linking CXX static library SIXTestWidener_artefacts/Release/libSIXTestWidener_SharedCode.a
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestWidener_artefacts/Release/libSIXTestWidener_SharedCode.a(juce_audio_processors_headless_ara.cpp.o) has no symbols
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib: for architecture: x86_64 file: SIXTestWidener_artefacts/Release/libSIXTestWidener_SharedCode.a(juce_audio_processors_headless_lv2_libs.cpp.o) has no symbols
+[118/193] Generating SIXTestWidener_artefacts/JuceLibraryCode/SIXTestWidener_VST3/PkgInfo
+[119/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Engine/HostedInstance.cpp.o
+[120/193] Building CXX object CMakeFiles/SIX_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[121/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Core/Params.cpp.o
+[122/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Engine/AudioEngine.cpp.o
+[123/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Host/PluginCatalog.cpp.o
+[124/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Host/PresetBank.cpp.o
+[125/193] Building CXX object CMakeFiles/SIXTests.dir/Source/PluginProcessor.cpp.o
+[126/193] Building CXX object CMakeFiles/SIXTests.dir/Source/Host/HostManager.cpp.o
+[127/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/SixLookAndFeel.cpp.o
+[128/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/Widgets.cpp.o
+[129/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/SendsPanel.cpp.o
+[130/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/ChannelStrip.cpp.o
+[131/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/PresetBar.cpp.o
+[132/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/PluginWindows.cpp.o
+[133/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/DeviceChain.cpp.o
+[134/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/BrowserPanel.cpp.o
+[135/193] Building CXX object CMakeFiles/SIXTests.dir/Source/UI/PluginEditor.cpp.o
+[136/193] Building CXX object CMakeFiles/SIXTests.dir/Tests/EngineTests.cpp.o
+[137/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
+[138/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_gui_extra/juce_gui_extra.mm.o
+[139/193] Building C object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Sheenbidi.c.o
+[140/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_processors/juce_audio_processors.mm.o
+[141/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o
+[142/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o
+[143/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_graphics/juce_graphics_Harfbuzz.cpp.o
+[144/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_core/juce_core.mm.o
+[145/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_ara.cpp.o
+[146/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless_lv2_libs.cpp.o
+[147/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o
+[148/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o
+[149/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o
+[150/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm.o
+In file included from /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm:35:
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.cpp:61:2: warning: This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored [-W#pragma-messages]
+   61 |  JUCE_COMPILER_WARNING ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_core/system/juce_PlatformDefs.h:292:38: note: expanded from macro 'JUCE_COMPILER_WARNING'
+  292 |  #define JUCE_COMPILER_WARNING(msg)  _Pragma (JUCE_STRINGIFY (message (msg)))
+      |                                      ^
+<scratch space>:124:2: note: expanded from here
+  124 |  message ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+1 warning generated.
+In file included from /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.mm:35:
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_gui_basics/juce_gui_basics.cpp:61:2: warning: This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored [-W#pragma-messages]
+   61 |  JUCE_COMPILER_WARNING ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/_deps/juce-src/modules/juce_core/system/juce_PlatformDefs.h:292:38: note: expanded from macro 'JUCE_COMPILER_WARNING'
+  292 |  #define JUCE_COMPILER_WARNING(msg)  _Pragma (JUCE_STRINGIFY (message (msg)))
+      |                                      ^
+<scratch space>:37:2: note: expanded from here
+   37 |  message ("This version of JUCE does not use the splash screen, the flag JUCE_DISPLAY_SPLASH_SCREEN is ignored")
+      |  ^
+1 warning generated.
+[151/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
+[152/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[153/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[154/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[155/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[156/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[157/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[158/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[159/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[160/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[161/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[162/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_processors_headless/juce_audio_processors_headless.mm.o
+[163/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[164/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[165/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[166/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[167/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[168/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[169/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[170/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[171/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[172/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[173/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+[174/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX_utils.cpp.o
+[175/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_ARA.cpp.o
+[176/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Standalone.cpp.o
+[177/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_Unity.cpp.o
+[178/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AAX.mm.o
+[179/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_1.mm.o
+[180/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AU_2.mm.o
+[181/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_AUv3.mm.o
+[182/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_LV2.mm.o
+[183/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST2.mm.o
+[184/193] Building CXX object CMakeFiles/SIXTests.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
+[185/193] Building CXX object CMakeFiles/SIXTestComp_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[186/193] Linking CXX executable SIXTests_artefacts/Release/SIXTests
+[187/193] Linking CXX CFBundle shared module SIXTestComp_artefacts/Release/VST3/SIXTestComp.vst3/Contents/MacOS/SIXTestComp
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestComp_artefacts/Release/VST3/SIXTestComp.vst3: code object is not signed at all
+In architecture: x86_64
+-- Replacing invalid signature with ad-hoc signature
+removing moduleinfo.json
+creating /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestComp_artefacts/Release/VST3/SIXTestComp.vst3
+[188/193] Building CXX object CMakeFiles/SIXTestLatency_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[189/193] Linking CXX CFBundle shared module SIXTestLatency_artefacts/Release/VST3/SIXTestLatency.vst3/Contents/MacOS/SIXTestLatency
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestLatency_artefacts/Release/VST3/SIXTestLatency.vst3: code object is not signed at all
+In architecture: x86_64
+-- Replacing invalid signature with ad-hoc signature
+removing moduleinfo.json
+creating /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestLatency_artefacts/Release/VST3/SIXTestLatency.vst3
+[190/193] Building CXX object CMakeFiles/SIXTestWidener_VST3.dir/_deps/juce-src/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST3.mm.o
+[191/193] Linking CXX CFBundle shared module SIXTestWidener_artefacts/Release/VST3/SIXTestWidener.vst3/Contents/MacOS/SIXTestWidener
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestWidener_artefacts/Release/VST3/SIXTestWidener.vst3: code object is not signed at all
+In architecture: x86_64
+-- Replacing invalid signature with ad-hoc signature
+removing moduleinfo.json
+creating /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIXTestWidener_artefacts/Release/VST3/SIXTestWidener.vst3
+[192/193] Linking CXX CFBundle shared module SIX_artefacts/Release/VST3/SIX.vst3/Contents/MacOS/SIX
+/Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIX_artefacts/Release/VST3/SIX.vst3: code object is not signed at all
+In architecture: x86_64
+-- Replacing invalid signature with ad-hoc signature
+removing moduleinfo.json
+creating /Users/runner/work/SIX-Mixer-Host/SIX-Mixer-Host/build-mac/SIX_artefacts/Release/VST3/SIX.vst3
