@@ -143,7 +143,7 @@ AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
                 break;
 
             case ControlKind::sendInDb:
-                layout.add (std::make_unique<AudioParameterFloat> (pid, c.name, NormalisableRange<float> (c.minValue, c.maxValue, 0.01f),
+                layout.add (std::make_unique<AudioParameterFloat> (pid, c.name, faderRange (c.maxValue),   // -inf .. +12 dB
                     c.defaultValue,
                     AudioParameterFloatAttributes().withLabel ("dB")
                         .withStringFromValueFunction ([] (float v, int) { return formatDb (v).upToLastOccurrenceOf (" dB", false, false); })

@@ -568,6 +568,10 @@ static void testSoloSendInPush()
     r.set ("ch01_sendin", -6.0f);
     auto& a = r.run (20, Rig::dc);
     CHECK_NEAR (a.getSample (0, 10), 0.5 * Decibels::decibelsToGain (-6.0), 1e-3, "Send In now scales the Live input too");
+    r.set ("ch01_sendin", kMinDb);
+    auto& silent = r.run (20, Rig::dc);
+    CHECK_NEAR (silent.getSample (0, 10), 0.0, 1e-6, "Send In all the way down = silence");
+    CHECK (r.param ("ch01_sendin")->getCurrentValueAsText().contains (String (CharPointer_UTF8 ("\xe2\x88\x9e"))), "shows -inf");
     r.set ("ch01_sendin", 0.0f);
     // 01 -> Master, 02 gets Live in -> Master, 02 sends to 03 (reverb style), 03 -> Master
     r.set ("ch02_livein", 1.0f);

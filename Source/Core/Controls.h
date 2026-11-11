@@ -22,7 +22,7 @@ constexpr int kNumOutChoices = kNumChannels + 1;       // Master + Ch 01..06
 constexpr float kMinDb = -70.0f;                       // treated as -inf
 constexpr float kFaderMaxDb  = 6.0f;
 constexpr float kSendMaxDb   = 6.0f;
-constexpr float kSendInMinDb = -24.0f;
+constexpr float kSendInMinDb = kMinDb;   // down to -inf (silence)
 constexpr float kSendInMaxDb = 12.0f;
 
 enum class ControlKind { gainDb, sendInDb, pan, toggle, out, map };
